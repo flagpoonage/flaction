@@ -59,7 +59,9 @@ class Dispatcher {
         Flog('Action created', action.actionName, params);
       }
 
-      collector = collector.then(nextAction(state, params, action));
+      collector = collector.then((data) => {
+        return nextAction(state, params, action);
+      });
     }
 
     return collector.then(callbackSuccess(state).bind(this)).catch(callbackError.bind(this));

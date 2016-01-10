@@ -1,41 +1,41 @@
 'use strict';
 
-var config = {
+let config = {
   debug: false,
   Promise: require('bluebird'),
-  routes: {}
+  routes: {},
 };
 
 module.exports = {
-  get: function get(key) {
+  get: (key) => {
     return config[key];
   },
 
-  getDebug: function getDebug() {
+  getDebug: () => {
     return config.debug;
   },
 
-  getPromise: function getPromise() {
+  getPromise: () => {
     return config.Promise;
   },
 
-  getRoutes: function getRoutes() {
+  getRoutes: () => {
     return config.routes;
   },
 
-  set: function set(key, value) {
+  set: (key, value) => {
     config[key] = value;
   },
 
-  setDebug: function setDebug(value) {
+  setDebug: (value) => {
     config.debug = value;
   },
 
-  setPromise: function setPromise(value) {
+  setPromise: (value) => {
     config.Promise = value;
   },
 
-  setRoutes: function setRoutes(value) {
+  setRoutes: (value) => {
     config.routes = value;
   }
 };

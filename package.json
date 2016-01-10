@@ -1,0 +1,26 @@
+{
+  "name": "flaction",
+  "version": "0.1.0",
+  "description": "Simple uni-directional data flow library that uses actions as the powerhouse",
+  "main": "flaction_modules/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react",
+    "flux",
+    "reflux",
+    "unidirectional",
+    "dataflow",
+    "pattern",
+    "flaction",
+    "actions"
+  ],
+  "author": "= <pokinoice@live.com>",
+  "license": "ISC",
+  "peerDependencies": {
+    "immutable": "^3.7.6",
+    "bluebird": "^3.1.1",
+    "reqwest": "^2.0.5"
+  }
+}

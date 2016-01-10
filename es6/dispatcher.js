@@ -5,13 +5,18 @@ let State = require('./state');
 let Flog = require('./log');
 let Promise = require('./config').getPromise();
 
+let nextAction = (state, params, action) => {
+  return action(state, params).then((data) => {
+    Flog('Action response', action.actionName, data);
+    return data;
+  });
+};
+
 let callbackSuccess = (state) => {
   return function(data) {
-    Flog('Action response', actionFn.actionName, data);
-
     State.set(state);
 
-    var outputArr = ['actionComplete'];
+    var outputArr = ['actionsComplete'];
 
     if(Array.isArray(data)) {
       data.forEach((v) => {
@@ -20,8 +25,6 @@ let callbackSuccess = (state) => {
     } else {
       outputArr.push(data);
     }
-
-    outputArr.push(actionFn.actionName);
 
     this.out.apply(this, outputArr);
 
@@ -56,7 +59,7 @@ class Dispatcher {
         Flog('Action created', action.actionName, params);
       }
 
-      collector = collector.then(action(state, params));
+      collector = collector.then(nextAction(state, params, action));
     }
 
     collector.then(callbackSuccess(state).bind(this)).catch(callbackError.bind(this));

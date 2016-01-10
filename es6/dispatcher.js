@@ -62,7 +62,7 @@ class Dispatcher {
       collector = collector.then(nextAction(state, params, action));
     }
 
-    collector.then(callbackSuccess(state).bind(this)).catch(callbackError.bind(this));
+    return collector.then(callbackSuccess(state).bind(this)).catch(callbackError.bind(this));
   }
 }
 

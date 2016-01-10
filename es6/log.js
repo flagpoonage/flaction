@@ -4,7 +4,7 @@ let config = require('./config');
 
 let consoleFn = (type) => {
   return (...args) => {
-    if(!config.debug || !console) { return; }
+    if(!config.getDebug() || !console) { return; }
 
     var logFn = 'console.' + type + '({param});';
 

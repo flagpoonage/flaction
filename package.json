@@ -1,6 +1,6 @@
 {
   "name": "flaction",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Simple uni-directional data flow library that uses actions as the powerhouse",
   "main": "lib/index.js",
   "scripts": {

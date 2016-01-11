@@ -12,29 +12,27 @@ let nextAction = (state, params, action) => {
   });
 };
 
-let callbackSuccess = (state) => {
-  return function(data) {
-    State.set(state);
+let callbackSuccess = function(data) {
+  var outputArr = ['actionsComplete'];
 
-    var outputArr = ['actionsComplete'];
+  if(Array.isArray(data)) {
+    data.forEach((v) => {
+      outputArr.push(v);
+    });
+  } else {
+    outputArr.push(data);
+  }
 
-    if(Array.isArray(data)) {
-      data.forEach((v) => {
-        outputArr.push(v);
-      });
-    } else {
-      outputArr.push(data);
-    }
+  this.out.apply(this, outputArr);
 
-    this.out.apply(this, outputArr);
-
-    return data;
-  };
+  return data;
 };
 
-let callbackError = function(err) {
-  Flog.error('Action error: ', actionFn.actionName, err);
-  this.out('actionError', actionFn.actionName, err);
+let callbackError = (action) => {
+  return function(err) {
+    Flog.error('Action error: ', action.actionName, err);
+    this.out('actionError', action.actionName, err);
+  };
 };
 
 class Dispatcher {
@@ -44,13 +42,13 @@ class Dispatcher {
   }
 
   fire (actions, params) {
-    let state = State.get();
+    let state = State._getTrueState();
 
     if(!Array.isArray(actions)) {
       actions = [actions];
     }
 
-    let collector = new Promise((resolve) => { resolve(); });
+    let collector = new Promise((resolve) => { return resolve(); });
 
     for (let i = 0; i < actions.length; i++) {
       let action = actions[i];
@@ -61,10 +59,12 @@ class Dispatcher {
 
       collector = collector.then((data) => {
         return nextAction(state, params, action);
-      });
+      }).catch(
+        callbackError(action).bind(this)
+      );
     }
 
-    return collector.then(callbackSuccess(state).bind(this)).catch(callbackError.bind(this));
+    return collector.then(callbackSuccess.bind(this));
   }
 }
 

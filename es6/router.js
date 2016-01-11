@@ -2,6 +2,7 @@
 
 let Config = require('./config');
 let State = require('./state');
+let Dispatcher = require('./dispatcher');
 
 class Router {
 
@@ -37,29 +38,30 @@ class Router {
   }
 
   readCurrentRoute () {
-    let hash = '/' + window.location.hash;
+    let hash = '/' + window.location.hash,
+        route = this.findRoute(window.location.hash.substr(1));
 
-    this.changeRoute(hash, this.findRoute(window.location.hash.substr(1)));
+    Dispatcher.fire(this.getChangeRouteAction(), { hash: hash, route: route });
   }
 
-  changeRoute (hash, route) {
-    var appState = State.get();
-    if(!route) {
+  getChangeRouteAction () {
+    let action = function(state, params) {
+      return new Promise((resolve) => {
+        state.route = params.route;
 
-      appState.route = {
-        hash: hash,
-        found: false
-      };
+        let routeFound = Boolean(params.route);
 
-    } else {
-      appState.route = route;
-      appState.route.hash = hash;
-      appState.route.found = true;
-    }
+        state.route = routeFound ? params.route : {};
+        state.route.hash = params.hash;
+        state.route.found = routeFound;
 
-    State.set(appState);
+        resolve();
+      });
+    };
 
-    this.onChange(appState.route);
+    action.actionName = 'ChangeRoute';
+
+    return action;
   }
 
   findRoute (hash) {
@@ -105,18 +107,6 @@ class Router {
       });
 
     return output;
-  }
-
-  onChange (route) {
-
-    this.changeHandlers.forEach(
-      handler => {
-        handler(route);
-      });
-  }
-
-  change (handler) {
-    this.changeHandlers.push(handler);
   }
 }
 

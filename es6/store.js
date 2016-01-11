@@ -19,7 +19,7 @@ class BaseStore {
 
       }).fail((err, msg) => {
 
-        reject({ err: err, msg: msg });
+        reject(err);
 
       });
     });

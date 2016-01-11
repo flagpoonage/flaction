@@ -4,29 +4,19 @@ let Immutable = require('immutable');
 
 class State {
   constructor () {
-    this.__internal = Immutable.Map({});
+    this._internal = {};
   }
 
-  get (key) {
-    if(!key) {
-      return this.__internal.toJS();
-    }
-
-    let res = this.__internal.getIn(key.split('.'));
-
-    if(typeof res.toJS === 'function') {
-      return res.toJS();
-    }
-
-    return res;
+  _getTrueState () {
+    return this._internal;
   }
 
-  set (data) {
-    if(typeof data === 'undefined' || data === null) {
-      this.__internal = Immutable.fromJs({});
-    }
+  get () {
+    return Immutable.Map(this._internal).toJS();
+  }
 
-    this.__internal = Immutable.fromJS(data);
+  initialize (data) {
+    this._internal = Immutable.Map(data).toJS();
   }
 }
 

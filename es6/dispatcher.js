@@ -48,7 +48,9 @@ class Dispatcher {
       actions = [actions];
     }
 
-    let collector = new Promise((resolve) => { return resolve(); });
+    //let collector = new Promise((resolve) => { return resolve(); });
+
+    let collector = [];
 
     for (let i = 0; i < actions.length; i++) {
       let action = actions[i];
@@ -57,14 +59,12 @@ class Dispatcher {
         Flog('Action created', action.actionName, params);
       }
 
-      collector = collector.then((data) => {
-        return nextAction(state, params, action);
-      }).catch(
-        callbackError(action).bind(this)
-      );
+      collector.push(nextAction(state, params, action).catch(callbackError(action).bind(this)));
     }
 
-    return collector.then(callbackSuccess.bind(this));
+    return Promise.all(collector).then(callbackSuccess.bind(this));
+
+    //return collector.then(callbackSuccess.bind(this));
   }
 }
 
